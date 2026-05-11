@@ -1,0 +1,32 @@
+name: longread_iso
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  # PacBio long-read tools
+  - pbskera>=1.2         # MAS-seq concatemer splitting (required — Revio reads are 13.5 kb arrays)
+  - pbmm2>=1.13          # PacBio wrapper around minimap2
+  - minimap2>=2.26
+  - isoquant>=3.4        # isoform discovery from long reads (authors used this)
+  # NB: SQANTI3 is NOT in bioconda. Installed separately via the
+  # pc_pipeline/setup_sqanti3.sh script (or its own conda env on HPC).
+  # SRA + file handling
+  - sra-tools>=3.0       # prefetch, sam-dump (NOT fasterq-dump for HiFi)
+  - samtools>=1.18
+  - bcftools>=1.18
+  - bedtools>=2.31
+  - pysam
+  # UCSC utilities for mm10 <-> mm39 crossref
+  - ucsc-liftover
+  - ucsc-gtftogenepred
+  - ucsc-genepredtobed
+  # H5AD handling (for explode_h5ad.py) — GSE314176 processed data is AnnData
+  - scanpy>=1.10
+  - anndata>=0.10
+  - h5py
+  # General
+  - pandas
+  - numpy
+  - scipy
+  - pip

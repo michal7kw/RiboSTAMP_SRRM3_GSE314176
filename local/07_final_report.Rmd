@@ -1,0 +1,87 @@
+---
+title: "RiboSTAMP SRRM3 GSE314176 — results summary"
+author: "SRF lab"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+suppressPackageStartupMessages({
+  library(data.table)
+  library(ggplot2)
+  library(knitr)
+})
+
+BASE_DIR <- normalizePath(file.path(dirname(knitr::current_input()), ".."), mustWork = FALSE)
+TABLES   <- file.path(BASE_DIR, "results", "tables")
+FIGURES  <- file.path(BASE_DIR, "results", "figures")
+```
+
+## Deliverable 1 — Novel Srrm3 isoform in progenitor-like cells
+
+**Short-read anchor** (from `90-1239779069/SRRM3_novel_exon/`):
+`chr5:135,898,574–135,898,652` (mm39, 79 bp, negative strand). Bulk PSI: Parental 57% > Pos 27% > KO 5%.
+
+### Per-cluster inclusion
+
+```{r per-cluster}
+pc_path <- file.path(TABLES, "novel_srrm3_per_cluster.tsv")
+if (file.exists(pc_path) && file.info(pc_path)$size > 0) {
+  per_cluster <- fread(pc_path)
+  knitr::kable(per_cluster, digits = 3,
+               caption = "Novel Srrm3 isoform detection per hippocampal cluster (P25).")
+} else {
+  cat("No per-cluster table yet — run 04_progenitor_enrichment.R.")
+}
+```
+
+### Fisher test: progenitor vs other
+
+```{r fisher}
+fi_path <- file.path(TABLES, "novel_srrm3_fisher_enrichment.tsv")
+if (file.exists(fi_path) && file.info(fi_path)$size > 0) {
+  fi <- fread(fi_path)
+  knitr::kable(fi, digits = 4)
+} else {
+  cat("No Fisher result yet.")
+}
+```
+
+### Cluster PSI plot
+
+```{r psi-plot, fig.width=9, fig.height=5}
+psi_pdf <- file.path(FIGURES, "novel_srrm3_cluster_psi.pdf")
+if (file.exists(psi_pdf)) {
+  cat(sprintf("See `%s`.", psi_pdf))
+}
+```
+
+## Deliverable 2 — Interneuron isoform list
+
+```{r interneuron}
+in_path <- file.path(TABLES, "interneuron_isoforms.tsv")
+if (file.exists(in_path)) {
+  ino <- fread(in_path)
+  knitr::kable(head(ino, 30), digits = 3,
+               caption = "Top 30 GABA-enriched isoforms (full table in results/tables/).")
+  cat(sprintf("\nTotal isoforms: %d\n", nrow(ino)))
+} else {
+  cat("Run 05_interneuron_isoform_table.R + 06_editsc_translation_column.R.")
+}
+```
+
+## Methods quick reference
+
+- **Alignment:** pbmm2 `--preset ISOSEQ` to mm10 + Gencode vM25.
+- **Discovery:** IsoQuant targeted to Srrm3 locus ± 10 kb (primary); full-tx on demand.
+- **Classification:** SQANTI3.
+- **Cross-build validation:** UCSC liftOver mm10 → mm39; bedtools intersect vs the 79-bp anchor.
+- **Enrichment:** Fisher exact on 2×2 (detects novel × progenitor).
+- **Interneurons:** author's annotated isoform matrix subsetted to GABA cells; translation via EditsC matrix.

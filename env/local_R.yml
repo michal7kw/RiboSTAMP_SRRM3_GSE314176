@@ -1,0 +1,31 @@
+name: ribostamp_local_R
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base>=4.3
+  # single-cell
+  - r-seurat>=5.0
+  - r-matrix
+  # tidy + io
+  - r-data.table
+  - r-dplyr
+  - r-tidyr
+  - r-readr
+  - r-stringr
+  # bioconductor — genomic ranges + annotation
+  - bioconductor-genomicranges
+  - bioconductor-rtracklayer
+  - bioconductor-summarizedexperiment
+  - bioconductor-singlecellexperiment
+  # stats + plots
+  - r-ggplot2
+  - r-viridis
+  - r-patchwork
+  - r-ggrepel
+  # rmarkdown report
+  - r-rmarkdown
+  - r-knitr
+  # IO
+  - r-anndata           # optional: reads .h5ad obs
+  - r-hdf5r
